@@ -1,0 +1,17 @@
+{
+  "name": "emoji-minesweeper",
+  "version": "1.0.0",
+  "description": "minesweeper rendered with React and emoji",
+  "main": "minesweeper.html",
+  "dependencies": {
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "rollup": "^0.49.3",
+    "rollup-plugin-typescript": "^0.8.1"
+  },
+  "author": "Isaac Evavold <isaacevavold@gmail.com>",
+  "license": "MIT"
+}
