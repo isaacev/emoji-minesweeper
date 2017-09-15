@@ -12,6 +12,10 @@
     "rollup": "^0.49.3",
     "rollup-plugin-typescript": "^0.8.1"
   },
+  "scripts": {
+    "build": "gulp build",
+    "watch": "gulp watch"
+  },
   "author": "Isaac Evavold <isaacevavold@gmail.com>",
   "license": "MIT"
 }
