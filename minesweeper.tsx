@@ -33,6 +33,16 @@ class GameTable extends React.PureComponent<{}> {
   }
 }
 
+class GameRow extends React.PureComponent<{}> {
+  render () {
+    return(
+      <tr className="game-row">
+        {this.props.children}
+      </tr>
+    )
+  }
+}
+
 class GameStat extends React.PureComponent<{value: any, name: string}> {
   render () {
     return (
