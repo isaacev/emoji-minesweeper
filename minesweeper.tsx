@@ -22,13 +22,11 @@ enum CellState {
 }
 
 class CellGrid {
-  private rows  : number
-  private cols  : number
+  private size  : { rows : number, cols : number }
   private cells : [CellValue, CellState][]
 
   constructor (rows: number, cols: number) {
-    this.rows  = rows
-    this.cols  = cols
+    this.size = { rows, cols }
     this.cells = new Array(rows * cols) as [CellValue, CellState][]
     this.init()
   }
@@ -38,27 +36,27 @@ class CellGrid {
   }
 
   totalRows (): number {
-    return this.rows
+    return this.size.rows
   }
 
   totalCols (): number {
-    return this.cols
+    return this.size.cols
   }
 
   getRow (y: number): [CellValue, CellState][] {
-    if (y >= this.rows || y < 0 || y % 1 !== 0) {
+    if (y >= this.size.rows || y < 0 || y % 1 !== 0) {
       return []
     }
 
-    return this.cells.slice(y * this.cols, this.cols)
+    return this.cells.slice(y * this.size.cols, this.size.cols)
   }
 
   getRows (): [CellValue, CellState][][] {
-    return parcel<[CellValue, CellState]>(this.cols, this.cells)
+    return parcel<[CellValue, CellState]>(this.size.cols, this.cells)
   }
 
   hasCell (x: number, y: number): boolean {
-    if (x < 0 || x >= this.cols || y < 0 || y >= this.rows) {
+    if (x < 0 || x >= this.size.cols || y < 0 || y >= this.size.rows) {
       return false
     }
 
@@ -70,7 +68,7 @@ class CellGrid {
       throw new Error(`no cell at ${x}x${y}`)
     }
 
-    return this.cells[y * this.cols + x][0]
+    return this.cells[y * this.size.cols + x][0]
   }
 
   setCellValue (x: number, y: number, value: CellValue): void {
@@ -78,7 +76,7 @@ class CellGrid {
       throw new Error(`no cell at ${x}x${y}`)
     }
 
-    this.cells[y * this.cols + x][0] = value
+    this.cells[y * this.size.cols + x][0] = value
   }
 
   getCellState (x: number, y: number): CellState {
@@ -86,7 +84,7 @@ class CellGrid {
       throw new Error(`no cell at ${x}x${y}`)
     }
 
-    return this.cells[y * this.cols + this.x][1]
+    return this.cells[y * this.size.cols + this.x][1]
   }
 
   setCellState (x: number, y: number, state: CellState): void {
@@ -94,7 +92,7 @@ class CellGrid {
       throw new Error(`no cell at ${x}x${y}`)
     }
 
-    this.cells[y * this.cols + x][1] = state
+    this.cells[y * this.size.cols + x][1] = state
   }
 
   private init (): void {
