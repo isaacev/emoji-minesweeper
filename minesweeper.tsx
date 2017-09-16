@@ -33,6 +33,10 @@ class CellGrid {
     this.init()
   }
 
+  totalCells (): number {
+    return this.cells.length
+  }
+
   totalRows (): number {
     return this.rows
   }
