@@ -89,3 +89,19 @@ class MineSweeper extends React.Component<Props, State> {
 }
 
 ReactDOM.render(<MineSweeper totalBombs={10} />, document.querySelector('main'))
+function addBombs (cells: CellValue[], totalBombs: number) {
+  let remaining = totalBombs
+  let failedGuesses = 0
+  while (remaining > 0 && failedGuesses < 10) {
+    const guess = Math.floor(Math.random() * cells.length)
+
+    if (cells[guess] !== CellValue.Bomb) {
+      cells[guess] = CellValue.Bomb
+      remaining--
+      failedGuesses = 0
+    } else {
+      failedGuesses++
+    }
+  }
+}
+
