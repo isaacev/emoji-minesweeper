@@ -43,6 +43,32 @@ class GameRow extends React.PureComponent<{}> {
   }
 }
 
+class GameCell extends React.PureComponent<{ value: CellValue, state: CellState, onClick: () => void }> {
+  render () {
+    let icon = 'hidden'
+    switch (this.props.state) {
+      case CellState.Exposed:
+        switch (this.props.value) {
+          case CellValue.Bomb:
+            icon = 'bomb'
+            break
+          default:
+            icon = this.props.value.toString().toLowerCase()
+        }
+        break
+      case CellState.Flagged:
+        icon = 'flagged'
+        break
+      case CellState.Boom:
+        icon = 'boom'
+        break
+    }
+
+    const cb = () => { this.props.onClick() }
+    return <td className={`game-cell game-cell-state-${icon}`} onClick={cb} />
+  }
+}
+
 class GameStat extends React.PureComponent<{value: any, name: string}> {
   render () {
     return (
