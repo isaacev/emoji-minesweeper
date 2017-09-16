@@ -136,6 +136,14 @@ class CellGrid {
     })
   }
 
+  countNeighborBombs (x: number, y: number): number {
+    const neighbors = this.getCellNeighbors(x, y)
+    return neighbors.reduce((accum, coord) => {
+      const isBomb = this.getCellValue(coord.x, coord.y) === CellValue.Bomb
+      return accum + (isBomb ? 1 : 0)
+    }, 0)
+  }
+
   private static init (rows: number, cols: number): [CellValue, CellState][][] {
     const cells = [] as [CellValue, CellState][][]
     for (let y = 0; y < rows; y++) {
