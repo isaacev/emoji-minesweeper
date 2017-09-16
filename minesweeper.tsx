@@ -91,12 +91,14 @@ class CellGrid {
     return this.cells[y][x][0]
   }
 
-  setCellValue (x: number, y: number, value: CellValue): void {
+  setCellValue (x: number, y: number, value: CellValue): CellGrid {
     if (this.hasCell(x, y) === false) {
       throw new Error(`no cell at ${x}x${y}`)
     }
 
-    this.cells[y][x][0] = value
+    const newGrid = this.mutateFrom(x, y)
+    newGrid.cells[y][x][0] = value
+    return newGrid
   }
 
   getCellState (x: number, y: number): CellState {
@@ -107,12 +109,14 @@ class CellGrid {
     return this.cells[y][x][1]
   }
 
-  setCellState (x: number, y: number, state: CellState): void {
+  setCellState (x: number, y: number, state: CellState): CellGrid {
     if (this.hasCell(x, y) === false) {
       throw new Error(`no cell at ${x}x${y}`)
     }
 
-    this.cells[y][x][1] = state
+    const newGrid = this.mutateFrom(x, y)
+    newGrid.cells[y][x][1] = state
+    return newGrid
   }
 
   private static init (rows: number, cols: number): [CellValue, CellState][][] {
