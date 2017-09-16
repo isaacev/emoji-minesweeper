@@ -21,6 +21,18 @@ enum CellState {
   Boom,
 }
 
+class GameTable extends React.PureComponent<{}> {
+  render () {
+    return (
+      <table className="game-table">
+        <tbody>
+          {this.props.children}
+        </tbody>
+      </table>
+    )
+  }
+}
+
 class GameStat extends React.PureComponent<{value: any, name: string}> {
   render () {
     return (
