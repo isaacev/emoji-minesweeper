@@ -145,17 +145,36 @@ class CellGrid {
     }, 0)
   }
 
+  revealAllBombs (): CellGrid {
+    let grid = this
+    this.forEach((x, y, value, state) => {
+      if (value === CellValue.Bomb && state === CellState.Hidden) {
+        grid = grid.setCellState(x, y, CellState.Exposed)
+      } else if (value !== CellValue.Bomb && state === CellState.Flagged) {
+        grid = grid.setCellState(x, y, CellState.Mistake)
+      }
+    })
+    return grid
+  }
+
+  detonateBomb (x: number, y: number): CellGrid {
+    return this.revealAllBombs()
+               .setCellState(x, y, CellState.Boom)
+  }
+
   revealCell (x: number, y: number): CellGrid {
-    const grid      = this
+      let grid      = this
     const value     = grid.getCellValue(x, y)
     const state     = grid.getCellState(x, y)
     const neighbors = grid.getCellNeighbors(x, y)
 
     if (state === CellState.Hidden) {
-      console.log('reveal', x, y)
-      grid = grid.setCellState(x, y, CellState.Exposed)
+      if (value === CellValue.Bomb) {
+        return grid.detonateBomb(x, y)
+      } else {
+        grid = grid.setCellState(x, y, CellState.Exposed)
+      }
     } else {
-      console.log('already revealed', x, y)
       return grid
     }
 
