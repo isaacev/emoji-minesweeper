@@ -113,21 +113,17 @@ class MineSweeper extends React.Component<Props, State> {
   }
 
   render () {
-    // <GameCell value={CellValue.Harmless} state={CellState.Hidden} onClick={this.handleCellClick(2, 2)} />
-    const rows = [] as GameRow[]
-    const cells = [] as GameCell[]
-    for (let i = 0; i < this.state.cellValues.length; i++) {
-      const x = i % this.props.cols
-      const y = Math.floor(i / this.props.cols)
-      const cell = <GameCell key={x} value={this.state.cellValues[i]} state={CellState.Exposed} onClick={this.handleCellClick(x, y)} />
-      cells.push(cell)
-
-      if (cells.length === this.props.cols) {
-        const row = <GameRow key={y}>{cells}</GameRow>
-        rows.push(row)
-        cells = []
-      }
-    }
+    const cols = this.props.cols
+    const vals = this.state.cellValues
+    const rows: GameRow[] = parcel<GameCell>(cols, vals).map((cells, y) => {
+      return (
+        <GameRow key={y}>
+          {cells.map((val, x) => {
+            return <GameCell key={x} value={val} state={CellState.Exposed} onClick={this.handleCellClick(x, y)} />
+          })}
+        </GameRow>
+      )
+    })
 
     return (
       <div className="minesweeper">
