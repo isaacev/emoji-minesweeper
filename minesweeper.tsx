@@ -275,7 +275,7 @@ function addBombs (grid: CellGrid, totalBombs: number): CellGrid {
     const y = guessBetween(0, grid.totalRows())
 
     if (newGrid.getCellValue(x, y) !== CellValue.Bomb) {
-      newGrid.setCellValue(x, y, CellValue.Bomb)
+      newGrid = newGrid.setCellValue(x, y, CellValue.Bomb)
       remaining--
       failedGuesses = 0
     } else {
