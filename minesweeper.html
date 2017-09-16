@@ -8,21 +8,18 @@
     <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700" rel="stylesheet">
     <style>
       .minesweeper {
-        width: 640px;
-        height: 480px;
+        display: table;
         border-radius: 24px;
         background-color: #dfdfdf;
         margin: 64px auto 0;
+        padding: 0;
         position: relative;
         font-family: 'Ubuntu', sans-serif;
       }
 
       .game {
-        position: absolute;
-        top: 12px;
-        bottom: 96px;
-        right: 12px;
-        left: 12px;
+        margin: 12px;
+        padding: 16px 0;
         background-color: white;
         border-radius: 12px 12px 0 0;
       }
@@ -35,7 +32,7 @@
       }
 
       .game-table {
-        margin: 16px;
+        margin: 0 16px;
       }
 
       .game-cell {
@@ -63,11 +60,8 @@
       .game-cell-state-boom    { background-image: url("./assets/boom.svg"); }
 
       .footer {
-        position: absolute;
         height: 72px;
-        bottom: 12px;
-        left: 12px;
-        right: 12px;
+        margin: 12px;
         display: flex;
         flex-direction: row;
         justify-content: space-evenly;
