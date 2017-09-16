@@ -439,4 +439,4 @@ function parcel<T> (n: number, list: T[]): T[][] {
   return parcels
 }
 
-ReactDOM.render(<MineSweeper rows={10} cols={10} totalBombs={12} />, document.querySelector('main'))
+ReactDOM.render(<MineSweeper rows={16} cols={24} totalBombs={12} />, document.querySelector('main'))
