@@ -18,6 +18,7 @@ enum CellState {
   Hidden,
   Exposed,
   Flagged,
+  Mistake,
   Boom,
 }
 
@@ -338,6 +339,8 @@ function pickIcon (value: CellValue, state: CellState): string {
       }
     case CellState.Flagged:
       return 'flagged'
+    case CellState.Mistake:
+      return 'mistake'
     case CellState.Boom:
       return 'boom'
     default:
