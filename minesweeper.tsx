@@ -144,6 +144,29 @@ class CellGrid {
     }, 0)
   }
 
+  revealCell (x: number, y: number): CellGrid {
+    const grid      = this
+    const value     = grid.getCellValue(x, y)
+    const state     = grid.getCellState(x, y)
+    const neighbors = grid.getCellNeighbors(x, y)
+
+    if (state === CellState.Hidden) {
+      console.log('reveal', x, y)
+      grid = grid.setCellState(x, y, CellState.Exposed)
+    } else {
+      console.log('already revealed', x, y)
+      return grid
+    }
+
+    if (value === CellValue.Zero) {
+      neighbors.forEach((neighbor) => {
+        grid = grid.revealCell(neighbor.x, neighbor.y)
+      })
+    }
+
+    return grid
+  }
+
   private static init (rows: number, cols: number): [CellValue, CellState][][] {
     const cells = [] as [CellValue, CellState][][]
     for (let y = 0; y < rows; y++) {
@@ -230,9 +253,11 @@ class MineSweeper extends React.Component<Props, State> {
     }
   }
 
-  handleCellClick (row: number, col: number): () => void {
+  handleCellClick (x: number, y: number): () => void {
     return (() => {
-      console.log(`clicked ${col}x${row}`)
+      this.setState({
+        grid: this.state.grid.revealCell(x, y),
+      })
     }).bind(this)
   }
 
