@@ -65,12 +65,20 @@ class CellGrid {
     return true
   }
 
-  getCell (x: number, y: number): [CellValue, CellState] {
+  getCellValue (x: number, y: number): CellValue {
     if (this.hasCell(x, y) === false) {
       throw new Error(`no cell at ${x}x${y}`)
     }
 
-    return this.cells[y * this.cols + this.x]
+    return this.cells[y * this.cols + this.x][0]
+  }
+
+  getCellState (x: number, y: number): CellState {
+    if (this.hasCell(x, y) === false) {
+      throw new Error(`no cell at ${x}x${y}`)
+    }
+
+    return this.cells[y * this.cols + this.x][1]
   }
 
   private init (): void {
