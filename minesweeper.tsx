@@ -55,6 +55,8 @@ class GameStat extends React.PureComponent<{value: any, name: string}> {
 }
 
 interface Props {
+  rows       : number
+  cols       : number
   totalBombs : number
 }
 
@@ -88,7 +90,6 @@ class MineSweeper extends React.Component<Props, State> {
   }
 }
 
-ReactDOM.render(<MineSweeper totalBombs={10} />, document.querySelector('main'))
 function addBombs (cells: CellValue[], totalBombs: number) {
   let remaining = totalBombs
   let failedGuesses = 0
@@ -133,3 +134,4 @@ function addValues (cells: CellValue[], width: number) {
   }
 }
 
+ReactDOM.render(<MineSweeper rows={5} cols={5} totalBombs={20} />, document.querySelector('main'))
