@@ -187,6 +187,19 @@ class CellGrid {
     return grid
   }
 
+  flagCell (x: number, y: number): CellGrid {
+    const grid  = this
+    const state = grid.getCellState(x, y)
+
+    if (state === CellState.Hidden) {
+      return grid.setCellState(x, y, CellState.Flagged)
+    } else if (state === CellState.Flagged) {
+      return grid.setCellState(x, y, CellState.Hidden)
+    } else {
+      return grid
+    }
+  }
+
   isGameOver (): bool {
     let gameOver = true
     this.forEach((x, y, value, state) => {
