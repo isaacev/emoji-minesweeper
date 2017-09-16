@@ -55,6 +55,14 @@ class CellGrid {
     return this.size.cols
   }
 
+  forEach (fn: (x: number, y: number, value: CellValue, state: CellState) => void): void {
+    for (let y = 0; y < this.size.rows; y++) {
+      for (let x = 0; x < this.size.cols; x++) {
+        fn.call(this, x, y, this.getCellValue(x, y), this.getCellState(x, y))
+      }
+    }
+  }
+
   getRow (y: number): [CellValue, CellState][] {
     if (y >= this.size.rows || y < 0 || y % 1 !== 0) {
       return []
