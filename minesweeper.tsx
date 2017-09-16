@@ -301,11 +301,35 @@ class MineSweeper extends React.Component<Props, State> {
     }
   }
 
-  handleCellClick (x: number, y: number): () => void {
-    return (() => {
-      this.setState({
-        grid: this.state.grid.revealCell(x, y),
-      })
+  handleCellClick (x: number, y: number): (event) => void {
+    return ((event) => {
+      const grid = this.state.grid.revealCell(x, y)
+
+      if (grid.isGameOver()) {
+        alert('game over')
+      } else {
+        this.setState({
+          grid  : grid,
+          moves : this.state.moves + 1,
+        })
+      }
+    }).bind(this)
+  }
+
+  handleCellRightClick (x: number, y: number): (event) => void {
+    return ((event) => {
+      event.preventDefault()
+      const grid = this.state.grid.flagCell(x, y)
+
+      if (grid.isGameOver()) {
+        alert('game over')
+      } else {
+        this.setState({
+          grid       : grid,
+          moves      : this.state.moves + 1,
+          foundBombs : this.state.foundBombs + 1,
+        })
+      }
     }).bind(this)
   }
 
@@ -322,7 +346,8 @@ class MineSweeper extends React.Component<Props, State> {
                       key={x}
                       value={tuple[0]}
                       state={tuple[1]}
-                      onClick={this.handleCellClick(x, y)} />
+                      onClick={this.handleCellClick(x, y)}
+                      onRightClick={this.handleCellRightClick(x, y)} />
                   })}
                 </GameRow>
               )
