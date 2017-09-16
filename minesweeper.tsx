@@ -185,7 +185,6 @@ function addValues (cells: CellValue[], width: number) {
   }
 }
 
-ReactDOM.render(<MineSweeper rows={5} cols={5} totalBombs={20} />, document.querySelector('main'))
 function parcel<T> (n: number, list: T[]): T[][] {
   if (n < 1) {
     throw new Error('expected n > 0')
@@ -205,3 +204,4 @@ function parcel<T> (n: number, list: T[]): T[][] {
   return parcels
 }
 
+ReactDOM.render(<MineSweeper rows={10} cols={10} totalBombs={12} />, document.querySelector('main'))
