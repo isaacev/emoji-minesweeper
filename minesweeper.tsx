@@ -146,25 +146,23 @@ class MineSweeper extends React.Component<Props, State> {
   }
 
   render () {
-    const rows = this.state.grid.getRows().map((cells, y) => {
-      return (
-        <GameRow key={y}>
-          {cells.map((tuple, x) => {
-            return <GameCell
-              key={x}
-              value={tuple[0]}
-              state={tuple[1]}
-              onClick={this.handleCellClick(x, y)} />
-          })}
-        </GameRow>
-      )
-    })
-
     return (
       <div className="minesweeper">
         <div className="game">
           <GameTable>
-            {rows}
+            {this.state.grid.getRows().map((cells, y) => {
+              return (
+                <GameRow key={y}>
+                  {cells.map((tuple, x) => {
+                    return <GameCell
+                      key={x}
+                      value={tuple[0]}
+                      state={tuple[1]}
+                      onClick={this.handleCellClick(x, y)} />
+                  })}
+                </GameRow>
+              )
+            })}
           </GameTable>
         </div>
         <div className="footer">
