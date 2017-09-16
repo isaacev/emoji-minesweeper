@@ -1,6 +1,26 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
+enum CellValue {
+  Zero,
+  One,
+  Two,
+  Three,
+  Four,
+  Five,
+  Six,
+  Seven,
+  Eight,
+  Bomb,
+}
+
+enum CellState {
+  Hidden,
+  Exposed,
+  Flagged,
+  Boom,
+}
+
 class GameStat extends React.PureComponent<{value: any, name: string}> {
   render () {
     return (
