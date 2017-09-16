@@ -187,6 +187,16 @@ class CellGrid {
     return grid
   }
 
+  isGameOver (): bool {
+    let gameOver = true
+    this.forEach((x, y, value, state) => {
+      if (state === CellState.Hidden) {
+        gameOver = false
+      }
+    })
+    return gameOver
+  }
+
   private static init (rows: number, cols: number): [CellValue, CellState][][] {
     const cells = [] as [CellValue, CellState][][]
     for (let y = 0; y < rows; y++) {
