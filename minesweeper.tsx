@@ -21,6 +21,61 @@ enum CellState {
   Boom,
 }
 
+class CellGrid {
+  private rows  : number
+  private cols  : number
+  private cells : [CellValue, CellState][]
+
+  constructor (rows: number, cols: number) {
+    this.rows  = rows
+    this.cols  = cols
+    this.cells = new Array(rows * cols) as [CellValue, CellState][]
+    this.init()
+  }
+
+  totalRows (): number {
+    return this.rows
+  }
+
+  totalCols (): number {
+    return this.cols
+  }
+
+  getRow (y: number): [CellValue, CellState][] {
+    if (y >= this.rows || y < 0 || y % 1 !== 0) {
+      return []
+    }
+
+    return this.cells.slice(y * this.cols, this.cols)
+  }
+
+  getRows (): [CellValue, CellState][][] {
+    return parcel<[CellValue, CellState]>(this.cols, this.cells)
+  }
+
+  hasCell (x: number, y: number): boolean {
+    if (x < 0 || x >= this.cols || y < 0 || y >= this.rows) {
+      return false
+    }
+
+    return true
+  }
+
+  getCell (x: number, y: number): [CellValue, CellState] {
+    if (this.hasCell(x, y) === false) {
+      throw new Error(`no cell at ${x}x${y}`)
+    }
+
+    return this.cells[y * this.cols + this.x]
+  }
+
+  private init (): void {
+    for (let i = 0; i < this.cells.length; i++) {
+      this.cells[i] = [CellValue.Zero, CellState.Hidden]
+    }
+  }
+}
+
 class GameTable extends React.PureComponent<{}> {
   render () {
     return (
@@ -69,6 +124,7 @@ interface Props {
 }
 
 interface State {
+  grid       : CellGrid
   foundBombs : number
   moves      : number
 }
@@ -76,13 +132,8 @@ interface State {
 class MineSweeper extends React.Component<Props, State> {
   constructor (props: Props) {
     super(props)
-
-    const cellValues = new Array(props.rows * props.cols) as CellValue[]
-    addBombs(cellValues, props.totalBombs)
-    addValues(cellValues, props.cols)
-
     this.state = {
-      cellValues,
+      grid       : new CellGrid(props.rows, props.cols),
       foundBombs : 0,
       moves      : 0,
     }
@@ -95,13 +146,15 @@ class MineSweeper extends React.Component<Props, State> {
   }
 
   render () {
-    const cols = this.props.cols
-    const vals = this.state.cellValues
-    const rows: GameRow[] = parcel<GameCell>(cols, vals).map((cells, y) => {
+    const rows = this.state.grid.getRows().map((cells, y) => {
       return (
         <GameRow key={y}>
-          {cells.map((val, x) => {
-            return <GameCell key={x} value={val} state={CellState.Hidden} onClick={this.handleCellClick(x, y)} />
+          {cells.map((tuple, x) => {
+            return <GameCell
+              key={x}
+              value={tuple[0]}
+              state={tuple[1]}
+              onClick={this.handleCellClick(x, y)} />
           })}
         </GameRow>
       )
