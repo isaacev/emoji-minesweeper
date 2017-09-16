@@ -128,7 +128,13 @@ class GameRow extends React.PureComponent<{}> {
   }
 }
 
-class GameCell extends React.PureComponent<{ value: CellValue, state: CellState, onClick: () => void }> {
+interface GameCellProps {
+  value   : CellValue
+  state   : CellState
+  onClick : () => void
+}
+
+class GameCell extends React.PureComponent<GameCellProps> {
   render () {
     const icon = pickIcon(this.props.value, this.props.state)
     const cb = () => { this.props.onClick() }
