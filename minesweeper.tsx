@@ -23,12 +23,11 @@ enum CellState {
 
 class CellGrid {
   private size  : { rows : number, cols : number }
-  private cells : [CellValue, CellState][]
+  private cells : [CellValue, CellState][][]
 
   constructor (rows: number, cols: number) {
     this.size = { rows, cols }
-    this.cells = new Array(rows * cols) as [CellValue, CellState][]
-    this.init()
+    this.cells = CellGrid.init(rows, cols)
   }
 
   totalCells (): number {
@@ -52,7 +51,7 @@ class CellGrid {
   }
 
   getRows (): [CellValue, CellState][][] {
-    return parcel<[CellValue, CellState]>(this.size.cols, this.cells)
+    return this.cells
   }
 
   hasCell (x: number, y: number): boolean {
@@ -68,7 +67,7 @@ class CellGrid {
       throw new Error(`no cell at ${x}x${y}`)
     }
 
-    return this.cells[y * this.size.cols + x][0]
+    return this.cells[y][x][0]
   }
 
   setCellValue (x: number, y: number, value: CellValue): void {
@@ -76,7 +75,7 @@ class CellGrid {
       throw new Error(`no cell at ${x}x${y}`)
     }
 
-    this.cells[y * this.size.cols + x][0] = value
+    this.cells[y][x][0] = value
   }
 
   getCellState (x: number, y: number): CellState {
@@ -84,7 +83,7 @@ class CellGrid {
       throw new Error(`no cell at ${x}x${y}`)
     }
 
-    return this.cells[y * this.size.cols + this.x][1]
+    return this.cells[y][x][1]
   }
 
   setCellState (x: number, y: number, state: CellState): void {
@@ -92,13 +91,18 @@ class CellGrid {
       throw new Error(`no cell at ${x}x${y}`)
     }
 
-    this.cells[y * this.size.cols + x][1] = state
+    this.cells[y][x][1] = state
   }
 
-  private init (): void {
-    for (let i = 0; i < this.cells.length; i++) {
-      this.cells[i] = [CellValue.Zero, CellState.Hidden]
+  private static init (rows: number, cols: number): [CellValue, CellState][][] {
+    const cells = [] as [CellValue, CellState][][]
+    for (let y = 0; y < rows; y++) {
+      cells[y] = []
+      for (let x = 0; x < cols; x++) {
+        cells[y][x] = [CellValue.Zero, CellState.Hidden]
+      }
     }
+    return cells
   }
 }
 
@@ -201,20 +205,28 @@ class MineSweeper extends React.Component<Props, State> {
   }
 }
 
-function addBombs (cells: CellValue[], totalBombs: number) {
+function addBombs (grid: CellGrid, totalBombs: number): CellGrid {
+  const newGrid = new CellGrid(grid.totalRows(), grid.totalCols())
   let remaining = totalBombs
   let failedGuesses = 0
   while (remaining > 0 && failedGuesses < 10) {
-    const guess = Math.floor(Math.random() * cells.length)
+    const x = guessBetween(0, grid.totalCols())
+    const y = guessBetween(0, grid.totalRows())
 
-    if (cells[guess] !== CellValue.Bomb) {
-      cells[guess] = CellValue.Bomb
+    if (newGrid.getCellValue(x, y) !== CellValue.Bomb) {
+      newGrid.setCellValue(x, y, CellValue.Bomb)
       remaining--
       failedGuesses = 0
     } else {
       failedGuesses++
     }
   }
+
+  return newGrid
+}
+
+function guessBetween (low: number, high: number): number {
+  return Math.floor(Math.random() * (high - low)) + low
 }
 
 function addValues (cells: CellValue[], width: number) {
