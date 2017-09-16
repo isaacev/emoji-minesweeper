@@ -96,6 +96,9 @@ class MineSweeper extends React.Component<Props, State> {
     super(props)
 
     const cellValues = new Array(props.rows * props.cols) as CellValue[]
+    addBombs(cellValues, props.totalBombs)
+    addValues(cellValues, props.cols)
+
     this.state = {
       cellValues,
       foundBombs : 0,
