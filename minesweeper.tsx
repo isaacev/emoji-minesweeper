@@ -237,7 +237,7 @@ function pickIcon (value: CellValue, state: CellState): string {
         case CellValue.Bomb:
           return 'bomb'
         default:
-          return value.toString().toLowerCase()
+          return CellValue[value].toLowerCase()
       }
     case CellState.Flagged:
       return 'flagged'
