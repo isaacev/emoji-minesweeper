@@ -101,7 +101,7 @@ class MineSweeper extends React.Component<Props, State> {
       return (
         <GameRow key={y}>
           {cells.map((val, x) => {
-            return <GameCell key={x} value={val} state={CellState.Exposed} onClick={this.handleCellClick(x, y)} />
+            return <GameCell key={x} value={val} state={CellState.Hidden} onClick={this.handleCellClick(x, y)} />
           })}
         </GameRow>
       )
