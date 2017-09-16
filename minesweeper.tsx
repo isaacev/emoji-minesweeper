@@ -70,7 +70,7 @@ class CellGrid {
       throw new Error(`no cell at ${x}x${y}`)
     }
 
-    return this.cells[y * this.cols + this.x][0]
+    return this.cells[y * this.cols + x][0]
   }
 
   getCellState (x: number, y: number): CellState {
