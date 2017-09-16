@@ -94,7 +94,10 @@ interface State {
 class MineSweeper extends React.Component<Props, State> {
   constructor (props: Props) {
     super(props)
+
+    const cellValues = new Array(props.rows * props.cols) as CellValue[]
     this.state = {
+      cellValues,
       foundBombs : 0,
       moves      : 0,
     }
