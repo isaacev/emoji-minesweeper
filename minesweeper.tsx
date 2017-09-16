@@ -119,6 +119,23 @@ class CellGrid {
     return newGrid
   }
 
+  getCellNeighbors (x: number, y: number): { x: number, y: number }[] {
+    return [
+      { x: x + 0, y: y - 1 }, // n
+      { x: x + 0, y: y + 1 }, // s
+      { x: x + 1, y: y + 0 }, // e
+      { x: x - 1, y: y + 0 }, // w
+      { x: x + 1, y: y - 1 }, // ne
+      { x: x - 1, y: y - 1 }, // nw
+      { x: x + 1, y: y + 1 }, // se
+      { x: x - 1, y: y + 1 }, // sw
+    ].filter((coord) => {
+      const legalX = (coord.x >= 0 && coord.x < this.size.cols)
+      const legalY = (coord.y >= 0 && coord.y < this.size.rows)
+      return legalX && legalY
+    })
+  }
+
   private static init (rows: number, cols: number): [CellValue, CellState][][] {
     const cells = [] as [CellValue, CellState][][]
     for (let y = 0; y < rows; y++) {
