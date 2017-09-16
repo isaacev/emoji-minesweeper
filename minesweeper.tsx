@@ -30,6 +30,19 @@ class CellGrid {
     this.cells = CellGrid.init(rows, cols)
   }
 
+  private clone (): CellGrid {
+    const newGrid = new CellGrid(this.size.rows, this.size.cols)
+    newGrid.cells = this.cells.slice()
+    return newGrid
+  }
+
+  private mutateFrom (x: number, y: number): CellGrid {
+    const newGrid       = this.clone()
+    newGrid.cells[y]    = this.cells[y].slice()
+    newGrid.cells[y][x] = this.cells[y][x].slice()
+    return newGrid
+  }
+
   totalCells (): number {
     return this.cells.length
   }
