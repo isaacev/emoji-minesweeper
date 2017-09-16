@@ -285,31 +285,16 @@ function guessBetween (low: number, high: number): number {
   return Math.floor(Math.random() * (high - low)) + low
 }
 
-function addValues (cells: CellValue[], width: number) {
-  for (let i = 0; i < cells.length; i++) {
-    if (cells[i] === CellValue.Bomb) {
-      continue
+function addValues (grid: CellGrid): CellGrid {
+  grid.forEach((x, y, value, state) => {
+    if (grid.getCellValue(x, y) === CellValue.Bomb) {
+      return
     }
 
-    const x = i % width
-    const y = Math.floor(i / width)
-    const rowAbove = y > 0
-    const rowBelow = i < (cells.length - width)
-    const colLeft  = x > 0
-    const colRight = x < (width - 1)
-
-    let near = 0
-    near += (rowAbove)             ? ((cells[i - width]     === CellValue.Bomb) ? 1 : 0) : 0 // n
-    near += (rowBelow)             ? ((cells[i + width]     === CellValue.Bomb) ? 1 : 0) : 0 // s
-    near += (colLeft)              ? ((cells[i - 1]         === CellValue.Bomb) ? 1 : 0) : 0 // w
-    near += (colRight)             ? ((cells[i + 1]         === CellValue.Bomb) ? 1 : 0) : 0 // e
-    near += (rowAbove && colLeft)  ? ((cells[i - width - 1] === CellValue.Bomb) ? 1 : 0) : 0 // nw
-    near += (rowAbove && colRight) ? ((cells[i - width + 1] === CellValue.Bomb) ? 1 : 0) : 0 // ne
-    near += (rowBelow && colLeft)  ? ((cells[i + width - 1] === CellValue.Bomb) ? 1 : 0) : 0 // sw
-    near += (rowBelow && colRight) ? ((cells[i + width + 1] === CellValue.Bomb) ? 1 : 0) : 0 // se
-
-    cells[i] = CellValue[near]
-  }
+    const neighborBombs = grid.countNeighborBombs(x, y)
+    grid = grid.setCellValue(x, y, neighborBombs)
+  })
+  return grid
 }
 
 function pickIcon (value: CellValue, state: CellState): string {
