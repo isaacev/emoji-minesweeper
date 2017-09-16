@@ -218,8 +218,13 @@ interface State {
 class MineSweeper extends React.Component<Props, State> {
   constructor (props: Props) {
     super(props)
+
+    let grid = new CellGrid(props.rows, props.cols)
+    grid = addBombs(grid, props.totalBombs)
+    grid = addValues(grid)
+
     this.state = {
-      grid       : new CellGrid(props.rows, props.cols),
+      grid       : grid,
       foundBombs : 0,
       moves      : 0,
     }
