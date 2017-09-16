@@ -245,16 +245,21 @@ class GameRow extends React.PureComponent<{}> {
 }
 
 interface GameCellProps {
-  value   : CellValue
-  state   : CellState
-  onClick : () => void
+  value        : CellValue
+  state        : CellState
+  onClick      : (event) => void
+  onRightClick : (event) => void
 }
 
 class GameCell extends React.PureComponent<GameCellProps> {
   render () {
     const icon = pickIcon(this.props.value, this.props.state)
-    const cb = () => { this.props.onClick() }
-    return <td className={`game-cell game-cell-state-${icon}`} onClick={cb} />
+    const onClick = (event) => { this.props.onClick(event) }
+    const onRightClick = (event) => { this.props.onRightClick(event) }
+    return <td
+      className={`game-cell game-cell-state-${icon}`}
+      onClick={onClick}
+      onContextMenu={onRightClick} />
   }
 }
 
