@@ -168,7 +168,6 @@ function addValues (cells: CellValue[], width: number) {
       continue
     }
 
-
     const x = i % width
     const y = Math.floor(i / width)
     const rowAbove = y > 0
