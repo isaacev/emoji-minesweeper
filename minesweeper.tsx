@@ -45,25 +45,7 @@ class GameRow extends React.PureComponent<{}> {
 
 class GameCell extends React.PureComponent<{ value: CellValue, state: CellState, onClick: () => void }> {
   render () {
-    let icon = 'hidden'
-    switch (this.props.state) {
-      case CellState.Exposed:
-        switch (this.props.value) {
-          case CellValue.Bomb:
-            icon = 'bomb'
-            break
-          default:
-            icon = this.props.value.toString().toLowerCase()
-        }
-        break
-      case CellState.Flagged:
-        icon = 'flagged'
-        break
-      case CellState.Boom:
-        icon = 'boom'
-        break
-    }
-
+    const icon = pickIcon(this.props.value, this.props.state)
     const cb = () => { this.props.onClick() }
     return <td className={`game-cell game-cell-state-${icon}`} onClick={cb} />
   }
@@ -182,6 +164,24 @@ function addValues (cells: CellValue[], width: number) {
     near += (rowBelow && colRight) ? ((cells[i + width + 1] === CellValue.Bomb) ? 1 : 0) : 0 // se
 
     cells[i] = CellValue[near]
+  }
+}
+
+function pickIcon (value: CellValue, state: CellState): string {
+  switch (state) {
+    case CellState.Exposed:
+      switch (value) {
+        case CellValue.Bomb:
+          return 'bomb'
+        default:
+          return value.toString().toLowerCase()
+      }
+    case CellState.Flagged:
+      return 'flagged'
+    case CellState.Boom:
+      return 'boom'
+    default:
+      return 'hidden'
   }
 }
 
