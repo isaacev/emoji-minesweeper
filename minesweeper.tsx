@@ -391,6 +391,33 @@ class MineSweeper extends React.Component<Props, State> {
     }).bind(this)
   }
 
+  startGame (): void {
+    this.setState({
+      state : GameState.Playing,
+      timer : 0,
+    })
+
+    this.startClock()
+  }
+
+  wonGame (grid: CellGrid): void {
+    this.setState({
+      state : GameState.Won,
+      grid  : grid.revealAllBombs(),
+    })
+
+    this.stopClock()
+  }
+
+  lostGame (grid: CellGrid): void {
+    this.setState({
+      state : GameState.Lost,
+      grid  : grid.revealAllBombs(),
+    })
+
+    this.stopClock()
+  }
+
   startClock (): void {
     this.resetClock()
     this.timerClock = setInterval(() => {
