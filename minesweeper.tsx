@@ -195,8 +195,10 @@ class CellGrid {
     return this.reduce<CellGrid>((grid, x, y, cell): CellGrid => {
       if (cell.value === CellValue.Bomb && cell.state == CellState.Hidden) {
         return grid.setCellState(x, y, CellState.Exposed)
-      } else {
+      } else if (cell.value !== CellValue.Bomb && cell.state === CellState.Flagged) {
         return grid.setCellState(x, y, CellState.Mistake)
+      } else {
+        return grid
       }
     }, this)
   }
