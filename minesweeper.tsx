@@ -84,18 +84,18 @@ class CellGrid {
     return newGrid
   }
 
-  forEach (fn: (x: number, y: number, value: CellValue, state: CellState) => void): void {
+  forEach (fn: (x: number, y: number, cell: Cell) => void): void {
     for (let y = 0; y < this.size.rows; y++) {
       for (let x = 0; x < this.size.cols; x++) {
-        fn.call(this, x, y, this.getCellValue(x, y), this.getCellState(x, y))
+        fn.call(this, x, y, this.getCell(x, y))
       }
     }
   }
 
-  reduce<T> (fn: (accum: T, x: number, y: number, value: CellValue, state: CellState) => T, accum: T): T {
+  reduce<T> (fn: (accum: T, x: number, y: number, cell: Cell) => T, accum: T): T {
     return this.getRows().reduce((accum: T, row: Cell[], y: number): T => {
       return row.reduce((accum: T, cell: Cell, x: number): T => {
-        return fn.call(this, x, y, this.getCellValue(x, y), this.getCellState(x, y))
+        return fn.call(this, x, y, this.getCell(x, y))
       }, accum)
     }, accum)
   }
@@ -190,8 +190,8 @@ class CellGrid {
   }
 
   revealAllBombs (): CellGrid {
-    return this.reduce<CellGrid>((grid, x, y, value, state): CellGrid => {
-      if (value === CellValue.Bomb && state == CellState.Hidden) {
+    return this.reduce<CellGrid>((grid, x, y, cell): CellGrid => {
+      if (cell[0] === CellValue.Bomb && cell[1] == CellState.Hidden) {
         return grid.setCellState(x, y, CellState.Exposed)
       } else {
         return grid.setCellState(x, y, CellState.Mistake)
@@ -243,8 +243,8 @@ class CellGrid {
   }
 
   isGameOver (): boolean {
-    return this.reduce<boolean>((isOver, x, y, value, state): boolean => {
-      if (state === CellState.Hidden) {
+    return this.reduce<boolean>((isOver, x, y, cell): boolean => {
+      if (cell[1] === CellState.Hidden) {
         return false
       }
 
@@ -253,12 +253,12 @@ class CellGrid {
   }
 
   isGameWon (): boolean {
-    return this.reduce<boolean>((isWon, x, y, value, state): boolean => {
-      if (state === CellState.Hidden) {
+    return this.reduce<boolean>((isWon, x, y, cell): boolean => {
+      if (cell[1] === CellState.Hidden) {
         return false
       }
 
-      if (value === CellValue.Bomb && state !== CellState.Flagged) {
+      if (cell[0] === CellValue.Bomb && cell[1] !== CellState.Flagged) {
         return false
       }
 
@@ -473,8 +473,8 @@ function guessBetween (low: number, high: number): number {
 }
 
 function addValues (grid: CellGrid): CellGrid {
-  return grid.reduce<CellGrid>((grid, x, y, value, state): CellGrid => {
-    if (grid.getCellValue(x, y) === CellValue.Bomb) {
+  return grid.reduce<CellGrid>((grid, x, y, cell): CellGrid => {
+    if (cell[0] === CellValue.Bomb) {
       return grid
     } else {
       return grid.setCellValue(x, y, grid.countNeighborBombs(x, y))
