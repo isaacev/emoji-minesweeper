@@ -88,7 +88,7 @@ class CellGrid {
       return []
     }
 
-    return this.cells.slice(y * this.size.cols, this.size.cols)
+    return this.cells[y]
   }
 
   getRows (): [CellValue, CellState][][] {
