@@ -243,13 +243,27 @@ class CellGrid {
   }
 
   isGameOver (): boolean {
-    return this.reduce<boolean>((isOver, x, y, cell): boolean => {
-      if (cell.state === CellState.Hidden) {
-        return false
+    const anyDetonated = this.reduce<boolean>((anyDetonated, x, y, cell): boolean => {
+      if (cell.state === CellState.Boom) {
+        return true
       }
 
-      return isOver
-    }, true)
+      return anyDetonated
+    }, false)
+
+    if (anyDetonated) {
+      return true
+    } else {
+      const allRevealed = this.reduce<boolean>((allRevealed, x, y, cell): boolean => {
+        if (cell.state === CellState.Hidden) {
+          return false
+        }
+
+        return allRevealed
+      }, true)
+
+      return allRevealed
+    }
   }
 
   isGameWon (): boolean {
