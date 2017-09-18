@@ -120,6 +120,14 @@ class CellGrid {
     return true
   }
 
+  getCell (x: number, y: number): Cell {
+    if (this.hasCell(x, y) === false) {
+      throw new Error(`no cell at ${x}x${y}`)
+    }
+
+    return this.cells[y][x]
+  }
+
   getCellValue (x: number, y: number): CellValue {
     if (this.hasCell(x, y) === false) {
       throw new Error(`no cell at ${x}x${y}`)
