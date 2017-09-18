@@ -519,7 +519,7 @@ function pickIcon(value, state) {
             return 'hidden';
     }
 }
-ReactDOM.render(React.createElement(MineSweeper, { rows: 16, cols: 24, totalBombs: 12 }), document.querySelector('main'));
+ReactDOM.render(React.createElement(MineSweeper, { rows: 16, cols: 24, totalBombs: 20 }), document.querySelector('main'));
 
 }(React,ReactDOM));
 //# sourceMappingURL=minesweeper.js.map
