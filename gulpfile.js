@@ -10,9 +10,7 @@ gulp.task('build', async () => {
       'react-dom',
     ],
     plugins: [
-      typescript({
-        jsx: 'React',
-      }),
+      typescript(),
     ],
   })
 
