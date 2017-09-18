@@ -90,6 +90,14 @@ class CellGrid {
     }
   }
 
+  reduce<T> (fn: (accum: T, x: number, y: number, value: CellValue, state: CellState) => T, accum: T): T {
+    return this.getRows().reduce((accum: T, row: [CellValue, CellState][], y: number): T => {
+      return row.reduce((accum: T, cell: [CellValue, CellState], x: number): T => {
+        return fn.call(this, x, y, this.getCellValue(x, y), this.getCellState(x, y))
+      }, accum)
+    }, accum)
+  }
+
   getRow (y: number): [CellValue, CellState][] {
     if (y >= this.size.rows || y < 0 || y % 1 !== 0) {
       return []
@@ -172,15 +180,13 @@ class CellGrid {
   }
 
   revealAllBombs (): CellGrid {
-    let grid = this as CellGrid
-    this.forEach((x, y, value, state) => {
-      if (value === CellValue.Bomb && state === CellState.Hidden) {
-        grid = grid.setCellState(x, y, CellState.Exposed)
-      } else if (value !== CellValue.Bomb && state === CellState.Flagged) {
-        grid = grid.setCellState(x, y, CellState.Mistake)
+    return this.reduce<CellGrid>((grid, x, y, value, state): CellGrid => {
+      if (value === CellValue.Bomb && state == CellState.Hidden) {
+        return grid.setCellState(x, y, CellState.Exposed)
+      } else {
+        return grid.setCellState(x, y, CellState.Mistake)
       }
-    })
-    return grid
+    }, this)
   }
 
   detonateBomb (x: number, y: number): CellGrid {
@@ -227,28 +233,27 @@ class CellGrid {
   }
 
   isGameOver (): boolean {
-    let gameOver = true
-    this.forEach((x, y, value, state) => {
+    return this.reduce<boolean>((isOver, x, y, value, state): boolean => {
       if (state === CellState.Hidden) {
-        gameOver = false
+        return false
       }
-    })
-    return gameOver
+
+      return isOver
+    }, true)
   }
 
   isGameWon (): boolean {
-    let gameWon = true
-    this.forEach((x, y, value, state) => {
+    return this.reduce<boolean>((isWon, x, y, value, state): boolean => {
       if (state === CellState.Hidden) {
-        gameWon = false
+        return false
       }
 
       if (value === CellValue.Bomb && state !== CellState.Flagged) {
-        gameWon = false
+        return false
       }
-    })
 
-    return gameWon
+      return isWon
+    }, true)
   }
 
   private static init (rows: number, cols: number): [CellValue, CellState][][] {
@@ -458,15 +463,13 @@ function guessBetween (low: number, high: number): number {
 }
 
 function addValues (grid: CellGrid): CellGrid {
-  grid.forEach((x, y, value, state) => {
+  return grid.reduce<CellGrid>((grid, x, y, value, state): CellGrid => {
     if (grid.getCellValue(x, y) === CellValue.Bomb) {
-      return
+      return grid
+    } else {
+      return grid.setCellValue(x, y, grid.countNeighborBombs(x, y))
     }
-
-    const neighborBombs = grid.countNeighborBombs(x, y)
-    grid = grid.setCellValue(x, y, neighborBombs)
-  })
-  return grid
+  }, grid)
 }
 
 function pickIcon (value: CellValue, state: CellState): string {
