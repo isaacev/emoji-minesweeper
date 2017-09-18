@@ -266,15 +266,15 @@ class GameRow extends React.PureComponent<{}> {
 interface GameCellProps {
   value        : CellValue
   state        : CellState
-  onClick      : (event) => void
-  onRightClick : (event) => void
+  onClick      : (event: React.MouseEvent<HTMLDivElement>) => void
+  onRightClick : (event: React.MouseEvent<HTMLDivElement>) => void
 }
 
 class GameCell extends React.PureComponent<GameCellProps> {
   render () {
     const icon = pickIcon(this.props.value, this.props.state)
-    const onClick = (event) => { this.props.onClick(event) }
-    const onRightClick = (event) => { this.props.onRightClick(event) }
+    const onClick = (event: React.MouseEvent<HTMLDivElement>) => { this.props.onClick(event) }
+    const onRightClick = (event: React.MouseEvent<HTMLDivElement>) => { this.props.onRightClick(event) }
     return <td
       className={`game-cell game-cell-state-${icon}`}
       onClick={onClick}
@@ -319,8 +319,8 @@ class MineSweeper extends React.Component<Props, State> {
     }
   }
 
-  handleCellClick (x: number, y: number): (event) => void {
-    return ((event) => {
+  handleCellClick (x: number, y: number): (event: React.MouseEvent<HTMLDivElement>) => void {
+    return ((event: React.MouseEvent<HTMLDivElement>) => {
       if (this.state.frozen) {
         return
       }
@@ -342,8 +342,8 @@ class MineSweeper extends React.Component<Props, State> {
     }).bind(this)
   }
 
-  handleCellRightClick (x: number, y: number): (event) => void {
-    return ((event) => {
+  handleCellRightClick (x: number, y: number): (event: React.MouseEvent<HTMLDivElement>) => void {
+    return ((event: React.MouseEvent<HTMLDivElement>) => {
       event.preventDefault()
 
       if (this.state.frozen) {
