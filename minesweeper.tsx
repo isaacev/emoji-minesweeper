@@ -25,15 +25,18 @@ enum CellState {
 class CellGrid {
   private size  : { rows : number, cols : number }
   private cells : [CellValue, CellState][][]
+  private flags : number
 
   constructor (rows: number, cols: number) {
     this.size = { rows, cols }
     this.cells = CellGrid.init(rows, cols)
+    this.flags = 0
   }
 
   private clone (): CellGrid {
     const newGrid = new CellGrid(this.size.rows, this.size.cols)
     newGrid.cells = this.cells.slice()
+    newGrid.flags = this.flags
     return newGrid
   }
 
@@ -54,6 +57,22 @@ class CellGrid {
 
   totalCols (): number {
     return this.size.cols
+  }
+
+  totalFlags (): number {
+    return this.flags
+  }
+
+  incFlags (): CellGrid {
+    const newGrid = this.clone()
+    newGrid.flags++
+    return newGrid
+  }
+
+  decFlags (): CellGrid {
+    const newGrid = this.clone()
+    newGrid.flags--
+    return newGrid
   }
 
   forEach (fn: (x: number, y: number, value: CellValue, state: CellState) => void): void {
@@ -192,9 +211,9 @@ class CellGrid {
     const state = grid.getCellState(x, y)
 
     if (state === CellState.Hidden) {
-      return grid.setCellState(x, y, CellState.Flagged)
+      return grid.setCellState(x, y, CellState.Flagged).incFlags()
     } else if (state === CellState.Flagged) {
-      return grid.setCellState(x, y, CellState.Hidden)
+      return grid.setCellState(x, y, CellState.Hidden).decFlags()
     } else {
       return grid
     }
@@ -281,9 +300,8 @@ interface Props {
 }
 
 interface State {
-  grid       : CellGrid
-  foundBombs : number
-  moves      : number
+  grid  : CellGrid
+  moves : number
 }
 
 class MineSweeper extends React.Component<Props, State> {
@@ -295,9 +313,8 @@ class MineSweeper extends React.Component<Props, State> {
     grid = addValues(grid)
 
     this.state = {
-      grid       : grid,
-      foundBombs : 0,
-      moves      : 0,
+      grid  : grid,
+      moves : 0,
     }
   }
 
@@ -325,15 +342,15 @@ class MineSweeper extends React.Component<Props, State> {
         alert('game over')
       } else {
         this.setState({
-          grid       : grid,
-          moves      : this.state.moves + 1,
-          foundBombs : this.state.foundBombs + 1,
+          grid  : grid,
+          moves : this.state.moves + 1,
         })
       }
     }).bind(this)
   }
 
   render () {
+    console.log(this.state.grid, this.state.grid.totalFlags())
     return (
       <div className="minesweeper">
         <div className="game">
@@ -355,7 +372,7 @@ class MineSweeper extends React.Component<Props, State> {
           </GameTable>
         </div>
         <div className="footer">
-          <GameStat value={this.props.totalBombs - this.state.foundBombs} name="Bombs" />
+          <GameStat value={this.state.grid.totalFlags()} name="Bombs" />
           <GameStat value={this.state.moves} name="Moves" />
           <GameStat value="00:00" name="Time" />
         </div>
