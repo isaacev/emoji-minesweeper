@@ -1,6 +1,13 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
+enum GameState {
+  Reset,
+  Playing,
+  Won,
+  Lost,
+}
+
 enum CellValue {
   Zero,
   One,
@@ -229,6 +236,21 @@ class CellGrid {
     return gameOver
   }
 
+  isGameWon (): boolean {
+    let gameWon = true
+    this.forEach((x, y, value, state) => {
+      if (state === CellState.Hidden) {
+        gameWon = false
+      }
+
+      if (value === CellValue.Bomb && state !== CellState.Flagged) {
+        gameWon = false
+      }
+    })
+
+    return gameWon
+  }
+
   private static init (rows: number, cols: number): [CellValue, CellState][][] {
     const cells = [] as [CellValue, CellState][][]
     for (let y = 0; y < rows; y++) {
@@ -300,9 +322,9 @@ interface Props {
 }
 
 interface State {
+  state  : GameState
   grid   : CellGrid
   moves  : number
-  frozen : boolean = false
 }
 
 class MineSweeper extends React.Component<Props, State> {
@@ -314,6 +336,7 @@ class MineSweeper extends React.Component<Props, State> {
     grid = addValues(grid)
 
     this.state = {
+      state : GameState.Reset,
       grid  : grid,
       moves : 0,
     }
@@ -321,7 +344,13 @@ class MineSweeper extends React.Component<Props, State> {
 
   handleCellClick (x: number, y: number): (event: React.MouseEvent<HTMLDivElement>) => void {
     return ((event: React.MouseEvent<HTMLDivElement>) => {
-      if (this.state.frozen) {
+      if (this.state.state === GameState.Reset) {
+        this.setState({
+          state : GameState.Playing,
+        })
+      }
+
+      if (this.state.state === GameState.Won || this.state.state === GameState.Lost) {
         return
       }
 
@@ -329,9 +358,9 @@ class MineSweeper extends React.Component<Props, State> {
 
       if (grid.isGameOver()) {
         this.setState({
-          grid   : grid,
-          moves  : this.state.moves + 1,
-          frozen : true,
+          state : grid.isGameWon() ? GameState.Won : GameState.Lost,
+          grid  : grid,
+          moves : this.state.moves + 1,
         })
       } else {
         this.setState({
@@ -346,7 +375,13 @@ class MineSweeper extends React.Component<Props, State> {
     return ((event: React.MouseEvent<HTMLDivElement>) => {
       event.preventDefault()
 
-      if (this.state.frozen) {
+      if (this.state.state === GameState.Reset) {
+        this.setState({
+          state : GameState.Playing,
+        })
+      }
+
+      if (this.state.state === GameState.Won || this.state.state === GameState.Lost) {
         return
       }
 
@@ -354,9 +389,9 @@ class MineSweeper extends React.Component<Props, State> {
 
       if (grid.isGameOver()) {
         this.setState({
-          grid   : grid,
-          moves  : this.state.moves + 1,
-          frozen : true,
+          state : grid.isGameWon() ? GameState.Won : GameState.Lost,
+          grid  : grid,
+          moves : this.state.moves + 1,
         })
       } else {
         this.setState({
