@@ -490,23 +490,4 @@ function pickIcon (value: CellValue, state: CellState): string {
   }
 }
 
-function parcel<T> (n: number, list: T[]): T[][] {
-  if (n < 1) {
-    throw new Error('expected n > 0')
-  }
-
-  const parcels = [] as T[][]
-  const parcel = [] as T[];
-  for (let i = 0; i < list.length; i++) {
-    parcel.push(list[i])
-
-    if (parcel.length >= n) {
-      parcels.push(parcel)
-      parcel = []
-    }
-  }
-
-  return parcels
-}
-
 ReactDOM.render(<MineSweeper rows={16} cols={24} totalBombs={12} />, document.querySelector('main'))
