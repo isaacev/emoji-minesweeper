@@ -95,7 +95,7 @@ class CellGrid {
   reduce<T> (fn: (accum: T, x: number, y: number, cell: Cell) => T, accum: T): T {
     return this.getRows().reduce((accum: T, row: Cell[], y: number): T => {
       return row.reduce((accum: T, cell: Cell, x: number): T => {
-        return fn.call(this, x, y, this.getCell(x, y))
+        return fn.call(this, accum, x, y, this.getCell(x, y))
       }, accum)
     }, accum)
   }
