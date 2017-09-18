@@ -300,8 +300,9 @@ interface Props {
 }
 
 interface State {
-  grid  : CellGrid
-  moves : number
+  grid   : CellGrid
+  moves  : number
+  frozen : boolean = false
 }
 
 class MineSweeper extends React.Component<Props, State> {
@@ -320,10 +321,18 @@ class MineSweeper extends React.Component<Props, State> {
 
   handleCellClick (x: number, y: number): (event) => void {
     return ((event) => {
+      if (this.state.frozen) {
+        return
+      }
+
       const grid = this.state.grid.revealCell(x, y)
 
       if (grid.isGameOver()) {
-        alert('game over')
+        this.setState({
+          grid   : grid,
+          moves  : this.state.moves + 1,
+          frozen : true,
+        })
       } else {
         this.setState({
           grid  : grid,
@@ -336,10 +345,19 @@ class MineSweeper extends React.Component<Props, State> {
   handleCellRightClick (x: number, y: number): (event) => void {
     return ((event) => {
       event.preventDefault()
+
+      if (this.state.frozen) {
+        return
+      }
+
       const grid = this.state.grid.flagCell(x, y)
 
       if (grid.isGameOver()) {
-        alert('game over')
+        this.setState({
+          grid   : grid,
+          moves  : this.state.moves + 1,
+          frozen : true,
+        })
       } else {
         this.setState({
           grid  : grid,
