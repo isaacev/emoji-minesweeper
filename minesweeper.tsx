@@ -29,7 +29,7 @@ enum CellState {
   Boom,
 }
 
-type Cell = [CellValue, CellState]
+type Cell = { value: CellValue, state: CellState }
 
 class CellGrid {
   private size  : { rows : number, cols : number }
@@ -52,7 +52,7 @@ class CellGrid {
   private mutateFrom (x: number, y: number): CellGrid {
     const newGrid       = this.clone()
     newGrid.cells[y]    = this.cells[y].slice()
-    newGrid.cells[y][x] = [this.cells[y][x][0], this.cells[y][x][1]]
+    newGrid.cells[y][x] = { value: this.cells[y][x].value, state: this.cells[y][x].state }
     return newGrid
   }
 
@@ -133,7 +133,7 @@ class CellGrid {
       throw new Error(`no cell at ${x}x${y}`)
     }
 
-    return this.cells[y][x][0]
+    return this.cells[y][x].value
   }
 
   setCellValue (x: number, y: number, value: CellValue): CellGrid {
@@ -142,7 +142,7 @@ class CellGrid {
     }
 
     const newGrid = this.mutateFrom(x, y)
-    newGrid.cells[y][x][0] = value
+    newGrid.cells[y][x].value = value
     return newGrid
   }
 
@@ -151,7 +151,7 @@ class CellGrid {
       throw new Error(`no cell at ${x}x${y}`)
     }
 
-    return this.cells[y][x][1]
+    return this.cells[y][x].state
   }
 
   setCellState (x: number, y: number, state: CellState): CellGrid {
@@ -160,7 +160,7 @@ class CellGrid {
     }
 
     const newGrid = this.mutateFrom(x, y)
-    newGrid.cells[y][x][1] = state
+    newGrid.cells[y][x].state = state
     return newGrid
   }
 
@@ -191,7 +191,7 @@ class CellGrid {
 
   revealAllBombs (): CellGrid {
     return this.reduce<CellGrid>((grid, x, y, cell): CellGrid => {
-      if (cell[0] === CellValue.Bomb && cell[1] == CellState.Hidden) {
+      if (cell.value === CellValue.Bomb && cell.state == CellState.Hidden) {
         return grid.setCellState(x, y, CellState.Exposed)
       } else {
         return grid.setCellState(x, y, CellState.Mistake)
@@ -244,7 +244,7 @@ class CellGrid {
 
   isGameOver (): boolean {
     return this.reduce<boolean>((isOver, x, y, cell): boolean => {
-      if (cell[1] === CellState.Hidden) {
+      if (cell.state === CellState.Hidden) {
         return false
       }
 
@@ -254,11 +254,11 @@ class CellGrid {
 
   isGameWon (): boolean {
     return this.reduce<boolean>((isWon, x, y, cell): boolean => {
-      if (cell[1] === CellState.Hidden) {
+      if (cell.state === CellState.Hidden) {
         return false
       }
 
-      if (cell[0] === CellValue.Bomb && cell[1] !== CellState.Flagged) {
+      if (cell.value === CellValue.Bomb && cell.state !== CellState.Flagged) {
         return false
       }
 
@@ -271,7 +271,7 @@ class CellGrid {
     for (let y = 0; y < rows; y++) {
       cells[y] = []
       for (let x = 0; x < cols; x++) {
-        cells[y][x] = [CellValue.Zero, CellState.Hidden]
+        cells[y][x] = { value: CellValue.Zero, state: CellState.Hidden }
       }
     }
     return cells
@@ -428,8 +428,8 @@ class MineSweeper extends React.Component<Props, State> {
                   {cells.map((tuple, x) => {
                     return <GameCell
                       key={x}
-                      value={tuple[0]}
-                      state={tuple[1]}
+                      value={tuple.value}
+                      state={tuple.state}
                       onClick={this.handleCellClick(x, y)}
                       onRightClick={this.handleCellRightClick(x, y)} />
                   })}
@@ -474,7 +474,7 @@ function guessBetween (low: number, high: number): number {
 
 function addValues (grid: CellGrid): CellGrid {
   return grid.reduce<CellGrid>((grid, x, y, cell): CellGrid => {
-    if (cell[0] === CellValue.Bomb) {
+    if (cell.value === CellValue.Bomb) {
       return grid
     } else {
       return grid.setCellValue(x, y, grid.countNeighborBombs(x, y))
