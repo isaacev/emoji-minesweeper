@@ -1,6 +1,8 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
+const TIMER_INTERVAL_MS = 10
+
 enum GameState {
   Reset,
   Playing,
@@ -354,6 +356,7 @@ interface State {
   state  : GameState
   grid   : CellGrid
   moves  : number
+  timer  : number
 }
 
 class MineSweeper extends React.Component<Props, State> {
@@ -368,8 +371,11 @@ class MineSweeper extends React.Component<Props, State> {
       state : GameState.Reset,
       grid  : grid,
       moves : 0,
+      timer : 0,
     }
   }
+
+  timerClock : number = null
 
   handleCellClick (x: number, y: number): (event: React.MouseEvent<HTMLDivElement>) => void {
     return ((event: React.MouseEvent<HTMLDivElement>) => {
@@ -383,6 +389,63 @@ class MineSweeper extends React.Component<Props, State> {
       event.preventDefault()
       this.updateGame(this.state.grid.flagCell(x, y))
     }).bind(this)
+  }
+
+  startClock (): void {
+    this.resetClock()
+    this.timerClock = setInterval(() => {
+      this.setState({
+        timer : this.state.timer + TIMER_INTERVAL_MS,
+      })
+    }, TIMER_INTERVAL_MS)
+  }
+
+  resetClock (): void {
+    this.stopClock()
+    this.setState({
+      timer : 0,
+    })
+  }
+
+  stopClock (): void {
+    if (this.timerClock !== null) {
+      clearInterval(this.timerClock)
+    }
+
+    this.timerClock = null
+  }
+
+  splitTime (time: number): number[] {
+    time = Math.round(time)
+    const chunks = [] as number[]
+
+    while (time > 0) {
+      const chunk = time % 100
+      chunks.push(chunk)
+      time -= chunk
+      time /= 100
+    }
+
+    return chunks
+  }
+
+  formatTime (): string {
+    const time = this.state.timer
+    const chunks = this.splitTime(time / 10).map((chunk) => {
+      if (chunk < 10) {
+        return '0' + chunk.toString()
+      } else {
+        return chunk.toString()
+      }
+    }).reverse()
+
+    if (chunks.length === 0) {
+      return '00:00'
+    } else if (chunks.length === 1) {
+      return '00:' + chunks[0]
+    } else {
+      return chunks.join(':')
+    }
   }
 
   updateGame (grid: CellGrid): void {
@@ -435,7 +498,7 @@ class MineSweeper extends React.Component<Props, State> {
         <div className="footer">
           <GameStat value={this.state.grid.totalFlags()} name="Bombs" />
           <GameStat value={this.state.moves} name="Moves" />
-          <GameStat value="00:00" name="Time" />
+          <GameStat value={this.formatTime()} name="Time" />
         </div>
       </div>
     )
