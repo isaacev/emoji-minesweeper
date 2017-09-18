@@ -1,3 +1,3 @@
 # Emoji Minesweeper
 
-![Emoji Minesweeper screenshot](https://github.com/isaacev/emoji-minesweeper/assets/screenshot.png)
+<a href="https://isaacev.github.io/emoji-minesweeper/"><img src="https://raw.githubusercontent.com/isaacev/emoji-minesweeper/master/assets/screenshot.png" /></a>
