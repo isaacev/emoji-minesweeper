@@ -29,9 +29,11 @@ enum CellState {
   Boom,
 }
 
+type Cell = [CellValue, CellState]
+
 class CellGrid {
   private size  : { rows : number, cols : number }
-  private cells : [CellValue, CellState][][]
+  private cells : Cell[][]
   private flags : number
 
   constructor (rows: number, cols: number) {
@@ -91,14 +93,14 @@ class CellGrid {
   }
 
   reduce<T> (fn: (accum: T, x: number, y: number, value: CellValue, state: CellState) => T, accum: T): T {
-    return this.getRows().reduce((accum: T, row: [CellValue, CellState][], y: number): T => {
-      return row.reduce((accum: T, cell: [CellValue, CellState], x: number): T => {
+    return this.getRows().reduce((accum: T, row: Cell[], y: number): T => {
+      return row.reduce((accum: T, cell: Cell, x: number): T => {
         return fn.call(this, x, y, this.getCellValue(x, y), this.getCellState(x, y))
       }, accum)
     }, accum)
   }
 
-  getRow (y: number): [CellValue, CellState][] {
+  getRow (y: number): Cell[] {
     if (y >= this.size.rows || y < 0 || y % 1 !== 0) {
       return []
     }
@@ -106,7 +108,7 @@ class CellGrid {
     return this.cells[y]
   }
 
-  getRows (): [CellValue, CellState][][] {
+  getRows (): Cell[][] {
     return this.cells
   }
 
@@ -256,8 +258,8 @@ class CellGrid {
     }, true)
   }
 
-  private static init (rows: number, cols: number): [CellValue, CellState][][] {
-    const cells = [] as [CellValue, CellState][][]
+  private static init (rows: number, cols: number): Cell[][] {
+    const cells = [] as Cell[][]
     for (let y = 0; y < rows; y++) {
       cells[y] = []
       for (let x = 0; x < cols; x++) {
