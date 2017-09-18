@@ -400,7 +400,7 @@ class MineSweeper extends React.Component<Props, State> {
 }
 
 function addBombs (grid: CellGrid, totalBombs: number): CellGrid {
-  const newGrid = new CellGrid(grid.totalRows(), grid.totalCols())
+  let newGrid = new CellGrid(grid.totalRows(), grid.totalCols())
   let remaining = totalBombs
   let failedGuesses = 0
   while (remaining > 0 && failedGuesses < 10) {
