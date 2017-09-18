@@ -481,23 +481,21 @@ class MineSweeper extends React.Component<Props, State> {
       case GameState.Lost:
         return
       case GameState.Reset:
-        this.setState({
-          state : GameState.Playing,
-        })
+        this.startGame()
         break
     }
 
+    this.setState({
+      grid  : grid,
+      moves : this.state.moves + 1,
+    })
+
     if (grid.isGameOver()) {
-      this.setState({
-        state : grid.isGameWon() ? GameState.Won : GameState.Lost,
-        grid  : grid,
-        moves : this.state.moves + 1,
-      })
-    } else {
-      this.setState({
-        grid  : grid,
-        moves : this.state.moves + 1,
-      })
+      if (grid.isGameWon()) {
+        this.wonGame(grid)
+      } else {
+        this.lostGame(grid)
+      }
     }
   }
 
