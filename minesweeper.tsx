@@ -43,7 +43,7 @@ class CellGrid {
   private mutateFrom (x: number, y: number): CellGrid {
     const newGrid       = this.clone()
     newGrid.cells[y]    = this.cells[y].slice()
-    newGrid.cells[y][x] = this.cells[y][x].slice()
+    newGrid.cells[y][x] = [this.cells[y][x][0], this.cells[y][x][1]]
     return newGrid
   }
 
