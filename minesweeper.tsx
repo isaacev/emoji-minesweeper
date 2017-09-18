@@ -219,7 +219,7 @@ class CellGrid {
     }
   }
 
-  isGameOver (): bool {
+  isGameOver (): boolean {
     let gameOver = true
     this.forEach((x, y, value, state) => {
       if (state === CellState.Hidden) {
