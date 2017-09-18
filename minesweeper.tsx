@@ -165,7 +165,7 @@ class CellGrid {
   }
 
   revealAllBombs (): CellGrid {
-    let grid = this
+    let grid = this as CellGrid
     this.forEach((x, y, value, state) => {
       if (value === CellValue.Bomb && state === CellState.Hidden) {
         grid = grid.setCellState(x, y, CellState.Exposed)
@@ -182,7 +182,7 @@ class CellGrid {
   }
 
   revealCell (x: number, y: number): CellGrid {
-      let grid      = this
+      let grid      = this as CellGrid
     const value     = grid.getCellValue(x, y)
     const state     = grid.getCellState(x, y)
     const neighbors = grid.getCellNeighbors(x, y)
