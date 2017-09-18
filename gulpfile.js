@@ -1,6 +1,6 @@
 const gulp = require('gulp')
 const rollup = require('rollup')
-const typescript = require('rollup-plugin-typescript')
+const typescript = require('rollup-plugin-typescript2')
 
 gulp.task('build', async () => {
   const bundle = await rollup.rollup({
