@@ -403,7 +403,6 @@ class MineSweeper extends React.Component<Props, State> {
   }
 
   render () {
-    console.log(this.state.grid, this.state.grid.totalFlags())
     return (
       <div className="minesweeper">
         <div className="game">
