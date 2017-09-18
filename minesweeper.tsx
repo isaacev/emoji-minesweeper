@@ -359,62 +359,42 @@ class MineSweeper extends React.Component<Props, State> {
 
   handleCellClick (x: number, y: number): (event: React.MouseEvent<HTMLDivElement>) => void {
     return ((event: React.MouseEvent<HTMLDivElement>) => {
-      if (this.state.state === GameState.Reset) {
-        this.setState({
-          state : GameState.Playing,
-        })
-      }
-
-      if (this.state.state === GameState.Won || this.state.state === GameState.Lost) {
-        return
-      }
-
-      const grid = this.state.grid.revealCell(x, y)
-
-      if (grid.isGameOver()) {
-        this.setState({
-          state : grid.isGameWon() ? GameState.Won : GameState.Lost,
-          grid  : grid,
-          moves : this.state.moves + 1,
-        })
-      } else {
-        this.setState({
-          grid  : grid,
-          moves : this.state.moves + 1,
-        })
-      }
+      event.preventDefault()
+      this.updateGame(this.state.grid.revealCell(x, y))
     }).bind(this)
   }
 
   handleCellRightClick (x: number, y: number): (event: React.MouseEvent<HTMLDivElement>) => void {
     return ((event: React.MouseEvent<HTMLDivElement>) => {
       event.preventDefault()
+      this.updateGame(this.state.grid.flagCell(x, y))
+    }).bind(this)
+  }
 
-      if (this.state.state === GameState.Reset) {
+  updateGame (grid: CellGrid): void {
+    switch (this.state.state) {
+      case GameState.Won:
+      case GameState.Lost:
+        return
+      case GameState.Reset:
         this.setState({
           state : GameState.Playing,
         })
-      }
+        break
+    }
 
-      if (this.state.state === GameState.Won || this.state.state === GameState.Lost) {
-        return
-      }
-
-      const grid = this.state.grid.flagCell(x, y)
-
-      if (grid.isGameOver()) {
-        this.setState({
-          state : grid.isGameWon() ? GameState.Won : GameState.Lost,
-          grid  : grid,
-          moves : this.state.moves + 1,
-        })
-      } else {
-        this.setState({
-          grid  : grid,
-          moves : this.state.moves + 1,
-        })
-      }
-    }).bind(this)
+    if (grid.isGameOver()) {
+      this.setState({
+        state : grid.isGameWon() ? GameState.Won : GameState.Lost,
+        grid  : grid,
+        moves : this.state.moves + 1,
+      })
+    } else {
+      this.setState({
+        grid  : grid,
+        moves : this.state.moves + 1,
+      })
+    }
   }
 
   render () {
