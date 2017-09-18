@@ -1,5 +1,4 @@
 .DS_Store
 node_modules/
 .rpt2_cache/
-minesweeper.js
 minesweeper.js.map
